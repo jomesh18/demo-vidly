@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Genre, validate_genre } = require('../models/genres');
+const { Genre, validateGenre } = require('../models/genres');
 
 router.get('/', (req, res) => {
     Genre.find({})
@@ -15,7 +15,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { error } = validate_genre(req.body);
+    const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     Genre.create({name: req.body.name})
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const { error } = validate_genre(req.body);
+    const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     try{

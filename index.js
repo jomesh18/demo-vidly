@@ -2,6 +2,7 @@ const express = require("express");
 const genres = require('./routes/genres');
 const home = require('./routes/home');
 const customers = require('./routes/customers');
+const movies = require('./routes/movies');
 const mongoose = require('mongoose');
 
 const uri = 'mongodb://localhost/movies';
@@ -17,6 +18,7 @@ app.use(express.urlencoded({extended: true}));
 app.use('/', home);
 app.use('/api/vidly/genres', genres);
 app.use('/api/vidly/customers', customers);
+app.use('/api/vidly/movies', movies);
 
 const port = process.env.PORT || 3000;
 

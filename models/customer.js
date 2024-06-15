@@ -15,7 +15,7 @@ const customerSchema = new mongoose.Schema({
 
 const Customer = mongoose.model('Customer', customerSchema);
 
-const validate_customer = (customer) => {
+const validateCustomer = (customer) => {
     const schema = Joi.object({
         name: Joi.string()
         .alphanum()
@@ -28,4 +28,4 @@ const validate_customer = (customer) => {
     return schema.validate(customer);
 }
 
-module.exports = { validate_customer, Customer};
+module.exports = { validateCustomer, Customer};
