@@ -28,4 +28,4 @@ const validateCustomer = (customer) => {
     return schema.validate(customer);
 }
 
-module.exports = { validateCustomer, Customer};
+module.exports = { validateCustomer, Customer };
