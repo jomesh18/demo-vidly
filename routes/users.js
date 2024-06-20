@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { validateUser, User } = require('../models/user');
 const _ = require('lodash');
+const bcrypt = require('bcrypt');
 
 router.post('/', async (req, res) => {
     const { error } = validateUser(req.body);
@@ -24,10 +25,10 @@ router.post('/', async (req, res) => {
     // });
 
     user = new User(_.pick(req.body, ['name', 'email', 'password']));
-
+    user.password = await bcrypt.hash(user.password, 10);
     await user.save();
-    res.status(200).send(_.pick(user, ['_id', 'name', 'email']));
-    
+    const token = user.generateAuthToken();
+    res.header('x-auth-token', token).status(200).send(_.pick(user, ['_id', 'name', 'email']));
 });
 
 module.exports = router;
