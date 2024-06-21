@@ -3,12 +3,18 @@ const router = express.Router();
 const { validateUser, User } = require('../models/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+const auth = require('../middleware/auth');
+
+router.get('/me', auth, async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.status(200).send(user);
+});
 
 router.post('/', async (req, res) => {
     const { error } = validateUser(req.body);
     if (error) return res.status(400).send(error);
 
-    let user = await User.findOne({email: req.body.email});
+    let user = await User.findOne({ email: req.body.email });
     if (user) return res.status(400).send(`User with email ${req.body.email} already exists`);
 
     // user = new User({

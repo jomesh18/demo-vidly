@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
         const movies = await Movie.find();
         res.status(200).send(movies);
     }
-    catch (ex){
+    catch (ex) {
         res.status(400).send(ex);
     }
 });
@@ -43,12 +43,12 @@ router.put('/:id', async (req, res) => {
     const movie = await Movie.findById(req.params.id);
     if (!movie) res.status(400).send('Invalid movie');
     movie.title = req.body.title,
-    movie.genre = {
-        _id: genre._id,
-        name: genre.name 
-    };
+        movie.genre = {
+            _id: genre._id,
+            name: genre.name
+        };
     movie.numberInStock = req.body.numberInStock,
-    movie.dailyRentalRate = req.body.dailyRentalRate
+        movie.dailyRentalRate = req.body.dailyRentalRate
     const result = await movie.save();
     if (!res) return res.status(400).send(result);
     res.status(200).send(result);

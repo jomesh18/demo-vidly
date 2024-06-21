@@ -14,14 +14,14 @@ const Genre = mongoose.model('Genre', genreSchema);
 const validateGenre = (genre) => {
     const schema = Joi.object({
         name: Joi.string()
-        .alphanum()
-        .min(3)
-        .required() 
+            .alphanum()
+            .min(3)
+            .required()
     });
     return schema.validate(genre);
 }
 
-module.exports = { 
+module.exports = {
     Genre,
     validateGenre,
     genreSchema

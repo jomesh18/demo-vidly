@@ -25,7 +25,7 @@ mongoose.connect(uri)
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/', home);
 app.use('/api/vidly/genres', genres);

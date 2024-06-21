@@ -25,8 +25,8 @@ router.post('/', async (req, res) => {
     const session = await Rental.startSession();
     if (!session)
         return res
-          .status(500)
-          .send("Internal Server Error: Unable to start a database session.");
+            .status(500)
+            .send("Internal Server Error: Unable to start a database session.");
     session.startTransaction();
     try {
         const rental = new Rental({
@@ -47,12 +47,12 @@ router.post('/', async (req, res) => {
         await session.commitTransaction();
         res.status(200).send(rental);
     }
-    catch (ex){
+    catch (ex) {
         await session.abortTransaction();
         res.status(500).send(ex);
     } finally {
         session.endSession();
     }
-}); 
+});
 
 module.exports = router;
