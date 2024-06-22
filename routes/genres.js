@@ -4,10 +4,10 @@ const { Genre, validateGenre } = require('../models/genre');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
-router.get('/', (req, res) => {
-    Genre.find({})
-        .then(result => res.status(200).send(result))
-        .catch(err => res.status(400).send(err));
+router.get('/', async (req, res) => {
+    throw new Error('Could not get genre');
+    const genres = await Genre.find({});
+    res.status(200).send(genres);
 });
 
 router.get('/:id', (req, res) => {
@@ -23,7 +23,6 @@ router.post('/', auth, (req, res) => {
     Genre.create({ name: req.body.name })
         .then(course => res.status(200).send(course))
         .catch(err => res.status(400).send(err));
-
 });
 
 router.put('/:id', async (req, res) => {
@@ -38,8 +37,6 @@ router.put('/:id', async (req, res) => {
     catch (ex) {
         res.status(400).send(ex);
     }
-
-
 });
 
 router.delete('/:id', [auth, admin], (req, res) => {

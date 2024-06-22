@@ -1,4 +1,5 @@
 const express = require("express");
+require('express-async-errors');
 const genres = require('./routes/genres');
 const home = require('./routes/home');
 const customers = require('./routes/customers');
@@ -10,6 +11,20 @@ const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const config = require('config');
 const mongoose = require('mongoose');
+const error = require('./middleware/error');
+const winston = require('winston');
+require('winston-mongodb');
+const app = express();
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(new winston.transports.MongoDB({db: 'mongodb://127.0.0.1:27017/movies', options: {useNewUrlParser: true, useUnifiedTopology: true}}));
+
+process.on('uncaughtException', (ex) =>{
+    console.log("UNCAUGHT EXCEPTION");
+    winston.error(ex.message, ex);
+});
+
+throw new Error('something failed on startup');
 
 if (!config.get('jwtPrivateKey')) {
     console.log('FATAL ERROR: jwtPrivateKey is not defined.');
@@ -22,7 +37,6 @@ mongoose.connect(uri)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('Count not connect to MongoDB', err));
 
-const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,6 +48,8 @@ app.use('/api/vidly/movies', movies);
 app.use('/api/vidly/rentals', rentals);
 app.use('/api/vidly/users', users);
 app.use('/api/vidly/auth', auth);
+
+app.use(error);
 
 const port = process.env.PORT || 3000;
 
