@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watchAll",
     "start": "nodemon index.js"
   },
   "keywords": [],
@@ -23,5 +23,8 @@
     "nodemon": "^3.1.2",
     "winston": "^3.13.0",
     "winston-mongodb": "^5.1.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
