@@ -7,6 +7,7 @@ const rentals = require('../routes/rentals');
 const users = require('../routes/users');
 const auth = require('../routes/auth');
 const error = require('../middleware/error');
+const returns = require('../routes/returns');
 
 module.exports = function(app) {
     app.use(express.json());
@@ -18,5 +19,6 @@ module.exports = function(app) {
     app.use('/api/vidly/rentals', rentals);
     app.use('/api/vidly/users', users);
     app.use('/api/vidly/auth', auth);
+    app.use('/api/vidly/returns', returns);
     app.use(error);
 }

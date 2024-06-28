@@ -3,12 +3,11 @@ const { Genre } = require('../../models/genre');
 const { User } = require('../../models/user');
 const mongoose = require('mongoose');
 
-let server;
-
 describe('/api/vidly/genres', () => {
+    let server;
     beforeEach(() => { server = require('../../index'); });
     afterEach(async () => { 
-        server.close(); 
+        await server.close(); 
         await Genre.deleteMany();
     });
 

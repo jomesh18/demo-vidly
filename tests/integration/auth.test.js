@@ -1,9 +1,9 @@
 const request = require('supertest');
 const { Genre } = require('../../models/genre');
 const { User } = require('../../models/user');
-let server;
 
 describe('testing authorisation middleware', () => {
+    let server;
     let token;
     let name;
     beforeEach(() => {
@@ -12,7 +12,7 @@ describe('testing authorisation middleware', () => {
         name = 'genre1';
     });
     afterEach(async () => {
-        server.close();
+        await server.close();
         await Genre.deleteMany();
     });
 
