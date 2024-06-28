@@ -26,24 +26,19 @@ router.post('/', auth, async (req, res) => {
     res.status(200).send(genre);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    try {
-        const genre = await Genre.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!genre) return res.status(404).send('Genre with this id is not found');
-        res.status(200).send(genre);
-    }
-    catch (ex) {
-        res.status(400).send(ex);
-    }
+    const genre = await Genre.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!genre) return res.status(404).send('Genre with this id is not found');
+    res.status(200).send(genre);
 });
 
-router.delete('/:id', [auth, admin], (req, res) => {
-    Genre.findByIdAndDelete(req.params.id)
-        .then(result => res.status(200).send(result))
-        .catch(err => res.status(400).send(err));
+router.delete('/:id', [auth, admin], async (req, res) => {
+    const genre = await Genre.findByIdAndDelete(req.params.id);
+    if (!genre) return res.status(404).send('Genre with this id not found');
+    res.status(200).send(genre);
 });
 
 module.exports = router;
