@@ -1,7 +1,9 @@
 const express = require('express');
 const { Rental } = require('../models/rental');
+const { Movie } = require('../models/movie');
 const router = express.Router();
 const auth = require('../middleware/auth');
+const dayjs = require('dayjs');
 
 router.post('/', auth, async (req, res) => {
     if (!req.body.customerId)
@@ -18,9 +20,15 @@ router.post('/', auth, async (req, res) => {
     if (rental.dateReturned)
         return res.status(400).send('Rental already processed');
     rental.dateReturned = new Date();
-    // rental.rentalFee = (rental.dateReturned.getDate()-rental.dateOut.getDate()) * rental.dailyRentalRate;
+    const diff = dayjs().diff(dayjs(rental.dateOut), 'day');
+    rental.rentalFee = diff * rental.movie.dailyRentalRate;
     await rental.save();
-    res.status(200).send();
+
+    await Movie.findOneAndUpdate({_id: rental.movie._id}, { 
+        $inc: { numberInStock: 1 } 
+    });
+        
+    res.status(200).send(rental);
     
 });
 

@@ -2,7 +2,9 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const { Rental } = require('../../models/rental');
 const { User } = require('../../models/user');
-// const dayjs = require('dayjs');
+const { Movie } = require('../../models/movie');
+const dayjs = require('dayjs');
+const { Genre } = require('../../models/genre');
 
 describe('api/vidly/returns', () => {
     let server;
@@ -96,14 +98,46 @@ describe('api/vidly/returns', () => {
     });
 
     // Calculate the rental fee
-    // it('should set the rental fee', async ()=>{
-    //     rental.dateOut = new dayjs().subtract(7, 'day').toDate();
-    //     const res = await exec();
-    //     const rentalInDb = await Rental.findById(rental._id);
-    //     const fee = (rentalInDb.dateReturned.getDate()-rentalInDb.dateOut.getDate()) * rentalInDb.dailyRentalRate;
-    //     expect(rentalInDb.rentalFee).toBe(fee);
-    // });
+    it('should set the rental fee', async ()=>{
+        rental.dateOut = new dayjs().subtract(7, 'day').toDate();
+        await rental.save();
+        const res = await exec();
+        const rentalInDb = await Rental.findById(rental._id);
+        expect(rentalInDb.rentalFee).toBe(14);
+    });
 
     // Increase the stock
+    it('should increase the stock of the movie', async ()=>{
+        const movie = new Movie({
+            _id: movieId,
+            title: '12345',
+            genre: { name: '12345' },
+            numberInStock: 1,
+            dailyRentalRate: 2
+        });
+        await movie.save();
+
+        const res = await exec();
+        
+        const movieInDb = await Movie.findById(movieId);
+        expect(movieInDb.numberInStock).toBe(2);
+        await Movie.deleteMany();
+    });
+
     // Return rental
+    it('should return the rental if input is valid', async ()=>{
+
+        const res = await exec();
+
+        const rentalInDb = await Rental.findById(rental._id);
+        // expect(res.body).toHaveProperty('dateOut');
+        // expect(res.body).toHaveProperty('dateReturned');
+        // expect(res.body).toHaveProperty('rentalFee');
+        // expect(res.body).toHaveProperty('customer');
+        // expect(res.body).toHaveProperty('movie');
+
+        expect(Object.keys(res.body)).toEqual(
+            expect.arrayContaining(['dateOut', 'dateReturned', 'rentalFee', 'customer', 'movie'])
+        )
+    });
 });
