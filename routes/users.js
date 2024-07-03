@@ -4,13 +4,14 @@ const { validateUser, User } = require('../models/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/auth');
+const validate = require('../middleware/validate');
 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', [auth, validate(validateUser)], async (req, res) => {
     const user = await User.findById(req.user._id).select('-password');
     res.status(200).send(user);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', [auth, validate(validateUser)], async (req, res) => {
     const { error } = validateUser(req.body);
     if (error) return res.status(400).send(error);
 

@@ -4,6 +4,7 @@ const { Genre, validateGenre } = require('../models/genre');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
+const validate = require('../middleware/validate');
 
 router.get('/', async (req, res) => {
     // throw new Error('Could not get genre');
@@ -17,18 +18,14 @@ router.get('/:id', validateObjectId, async (req, res) => {
     res.status(200).send(genre);
 });
 
-router.post('/', auth, async (req, res) => {
-    const { error } = validateGenre(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+router.post('/', [auth, validate(validateGenre)], async (req, res) => {
 
     const genre = new Genre( { name: req.body.name });
     await genre.save();
     res.status(200).send(genre);
 });
 
-router.put('/:id', auth, async (req, res) => {
-    const { error } = validateGenre(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+router.put('/:id', [auth, validate(validateGenre)], async (req, res) => {
 
     const genre = await Genre.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!genre) return res.status(404).send('Genre with this id is not found');
